@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
             swapPuzzle: function (eventObject) {
                 //Условие для разделения кликов мышки на пазл и вызова функции mixPuzzle
                 if (isNaN(eventObject)) {
-                    this.addressEmpty = this.valuePuzzle.indexOf(+eventObject.target.innerHTML);
-                }
+                    this.addressClickPuzzle = this.valuePuzzle.indexOf(+eventObject.target.innerHTML);
+                };
                 //Условие для проверки на допустимость смены пазлов 
                 if (this.addressClickPuzzle == this.addressEmpty - 1 && (this.addressClickPuzzle + 1) % 4 != 0 ||
                     this.addressClickPuzzle == this.addressEmpty + 1 && this.addressClickPuzzle % 4 != 0 ||
