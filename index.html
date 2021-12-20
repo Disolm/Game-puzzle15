@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <!-- первая версия игры в пазлы -->
+    <!-- <script src="script.js"></script> -->
+
+    <!-- вторая версия игры в пазлы -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- <script src="scriptVue.js"></script> -->
+
+    <!-- Третья версия игры в пазлы -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2"></script> -->
+    <script src="scriptVue2.js"></script>
+
+    <title>Пятнашки</title>
+</head>
+
+<body>
+    <!--
+        <div class="field">
+        <div class="button">
+            <button type="button" id='mixPuzzle'>Перемешать</button>
+        </div>
+    </div>
+    <div class="center">
+        <div class='tablet' id='tablet'></div>
+    </div> 
+    -->
+<!-- добавлен фреймворк VUE -->
+    <div id='app'>
+        <div class="field">
+                <button class="butt-mix" type="button" @click='mixPuzzle'>Перемешать</button>
+        </div>
+        <div class="center">
+            <div class='tablet'>
+                <div class='td' v-for='num in valuePuzzle' @click='swapPuzzle' 
+                v-bind:class='[num==="" ? classEmpty: "", num==numCursorBottom ? classCursorBottom: "", 
+                num==numCursorLeft ? classCursorLeft: "", num==numCursorRight ? classCursorRight: "",
+                num==numCursorTop ? classCursorTop: "",]' >{{num}}</div>
+                
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
