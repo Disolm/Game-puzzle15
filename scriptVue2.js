@@ -22,13 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         },
         methods: {
-            searchEmptyPuzzle: function () {
-                for (let i = 0; i < this.valuePuzzle.length; i++) {
-                    if (this.valuePuzzle[i] === '') {
-                        this.addressEmpty = i;
-                    };
-                };
-
+            searchEmptyPuzzle: function () { //Поиск адреса пустого пазла
+                this.addressEmpty = this.valuePuzzle.indexOf('');
             },
             swapPuzzle: function (eventObject) {
                 //Условие для разделения кликов мышки на пазл и вызова функции mixPuzzle
