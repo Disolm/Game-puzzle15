@@ -28,11 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             swapPuzzle: function (eventObject) {
                 //Условие для разделения кликов мышки на пазл и вызова функции mixPuzzle
                 if (isNaN(eventObject)) {
-                    for (let j = 0; j < this.valuePuzzle.length; j++) {
-                        if (this.valuePuzzle[j] == +eventObject.target.innerHTML) {
-                            this.addressClickPuzzle = j;
-                        };
-                    }
+                    this.addressEmpty = this.valuePuzzle.indexOf(+eventObject.target.innerHTML);
                 }
                 //Условие для проверки на допустимость смены пазлов 
                 if (this.addressClickPuzzle == this.addressEmpty - 1 && (this.addressClickPuzzle + 1) % 4 != 0 ||
