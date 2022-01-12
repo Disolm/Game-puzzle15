@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/modal.css">
     <!-- первая версия игры в пазлы -->
     <!-- <script src="script.js"></script> -->
 
@@ -30,18 +31,47 @@
         <div class='tablet' id='tablet'></div>
     </div> 
     -->
-<!-- добавлен фреймворк VUE -->
+    <!-- добавлен фреймворк VUE -->
     <div id='app'>
         <div class="field">
-                <button class="butt-mix" type="button" @click='mixPuzzle'>Перемешать</button>
+            <button class="modal-open" type="button" @click='modalOpenClose'><img src="svg/settings-svgrepo-com.svg"
+                    alt="настройка"></button>
+            <button class="butt-mix" type="button" @click='mixPuzzle'>Перемешать <b>&#128472;</b></button>
         </div>
         <div class="center">
-            <div class='tablet'>
-                <div class='td' v-for='num in valuePuzzle' @click='swapPuzzle' 
-                v-bind:class='[num==="" ? classEmpty: "", num==numCursorBottom ? classCursorBottom: "", 
+            <div class='tablet' v-bind:style="{ height: isHeight  + 'px', width: isWidth + 'px' }">
+                <div class='td' v-for='num in valuePuzzle' @click='swapPuzzle' v-bind:class='[num==="" ? classEmpty: "", num==numCursorBottom ? classCursorBottom: "", 
                 num==numCursorLeft ? classCursorLeft: "", num==numCursorRight ? classCursorRight: "",
-                num==numCursorTop ? classCursorTop: "",]' >{{num}}</div>
-                
+                num==numCursorTop ? classCursorTop: "",]'>{{num}}</div>
+
+            </div>
+        </div>
+        <div class="modal-overlay" v-bind:class="classActiveModalOverlay">
+            <div class="modal-window" v-bind:class="classActiveModalWindow">
+                <div class="modal-header">
+                    <span class="modal-title">Настройка игры</span>
+                    <!-- <span class="modal-close">&times;</span> -->
+                </div>
+
+                <div class="modal-body">
+                    <span>
+                        <label>Высота</label>
+                        <select v-model="puzzleHeight">
+                            <option v-for='height in dimensions'>{{height}}</option>
+                        </select>
+                    </span>
+                    <span>
+                        <label>Ширина</label>
+                        <select v-model="puzzleWidth">
+                            <option v-for='width in dimensions'>{{width}}</option>
+                        </select>
+                    </span>
+                </div>
+
+                <div class="modal-footer">
+                    <button @click="modalOk">Ok</button>
+                    <button @click="modalOpenClose">Cancel</button>
+                </div>
             </div>
         </div>
     </div>

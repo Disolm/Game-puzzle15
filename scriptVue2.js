@@ -2,11 +2,18 @@ document.addEventListener('DOMContentLoaded', () => {
     var app = new Vue({
         el: '#app',
         data: {
-            valuePuzzle: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, ''],
+            valuePuzzle: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, ''], 
+            dimensions: [3, 4, 5],
 
             addressEmpty: 15,
             addressClickPuzzle: undefined,
             classEmpty: 'empty',
+
+            puzzleHeight: 4,
+            puzzleWidth: 4,
+
+            isHeight: 290,
+            isWidth: 280,
 
             classCursorTop: 'cursor-top',
             numCursorTop: 12,
@@ -20,21 +27,26 @@ document.addEventListener('DOMContentLoaded', () => {
             classCursorBottom: 'cursor-bottom',
             numCursorBottom: undefined,
 
+            isActiveModal: false,
+
         },
         methods: {
-            searchEmptyPuzzle: function () { //Поиск адреса пустого пазла
+            //Поиск адреса пустого пазла
+            searchEmptyPuzzle: function () { 
                 this.addressEmpty = this.valuePuzzle.indexOf('');
             },
+
+            //Смена пазлов
             swapPuzzle: function (eventObject) {
                 //Условие для разделения кликов мышки на пазл и вызова функции mixPuzzle
                 if (isNaN(eventObject)) {
                     this.addressClickPuzzle = this.valuePuzzle.indexOf(+eventObject.target.innerHTML);
                 };
                 //Условие для проверки на допустимость смены пазлов 
-                if (this.addressClickPuzzle == this.addressEmpty - 1 && (this.addressClickPuzzle + 1) % 4 != 0 ||
-                    this.addressClickPuzzle == this.addressEmpty + 1 && this.addressClickPuzzle % 4 != 0 ||
-                    this.addressClickPuzzle == this.addressEmpty - 4 ||
-                    this.addressClickPuzzle == this.addressEmpty + 4) {
+                if (this.addressClickPuzzle == this.addressEmpty - 1 && (this.addressClickPuzzle + 1) % this.puzzleWidth != 0 ||
+                    this.addressClickPuzzle == this.addressEmpty + 1 && this.addressClickPuzzle % this.puzzleWidth != 0 ||
+                    this.addressClickPuzzle == this.addressEmpty - this.puzzleWidth ||
+                    this.addressClickPuzzle == this.addressEmpty + this.puzzleWidth) {
 
                     const buffer = this.valuePuzzle[this.addressEmpty];
                     this.valuePuzzle[this.addressEmpty] = this.valuePuzzle[this.addressClickPuzzle];
@@ -47,42 +59,90 @@ document.addEventListener('DOMContentLoaded', () => {
             //Функция перемешивания пазлов
             mixPuzzle: function () {
                 console.log('mixPuzzle')
-                const arr = [-4, -1, 1, 4]; //координаты куда можно двигать пазлы
+                const arr = [-this.puzzleWidth, -1, 1, this.puzzleWidth]; //координаты куда можно двигать пазлы
                 for (let i = 0; i < 1000; i++) {
 
                     do {//проверка куда можно двигать пазлы
                         this.addressClickPuzzle = this.addressEmpty + arr[Math.floor(Math.random() * arr.length)];
-                    } while (this.addressClickPuzzle < 0 || this.addressClickPuzzle > 15 ||
-                    this.addressClickPuzzle == this.addressEmpty - 1 && (this.addressClickPuzzle + 1) % 4 == 0 ||
-                        this.addressClickPuzzle == this.addressEmpty + 1 && this.addressClickPuzzle % 4 == 0) 
+                    } while (this.addressClickPuzzle < 0 || this.addressClickPuzzle > (this.puzzleWidth * this.puzzleHeight - 1) ||
+                    this.addressClickPuzzle == this.addressEmpty - 1 && (this.addressClickPuzzle + 1) % this.puzzleWidth == 0 ||
+                        this.addressClickPuzzle == this.addressEmpty + 1 && this.addressClickPuzzle % this.puzzleWidth == 0)
 
                     this.swapPuzzle(this.addressClickPuzzle);
-                }
+                };
+                return this.valuePuzzle = this.valuePuzzle.concat()
             },
             //прорисовка курсоров 
             cursorDraw: function () {
-                this.numCursorTop = this.valuePuzzle[this.addressEmpty - 4];
+                this.numCursorTop = this.valuePuzzle[this.addressEmpty - this.puzzleWidth];
 
-                this.numCursorBottom = this.valuePuzzle[this.addressEmpty + 4];
+                this.numCursorBottom = this.valuePuzzle[this.addressEmpty + this.puzzleWidth];
 
-                if ((this.addressEmpty) % 4 == 0) {
+                if ((this.addressEmpty) % this.puzzleWidth == 0) {
                     this.numCursorLeft = undefined;
                 } else {
                     this.numCursorLeft = this.valuePuzzle[this.addressEmpty - 1];
                 };
 
-                if ((this.addressEmpty + 1) % 4 == 0) {
+                if ((this.addressEmpty + 1) % this.puzzleWidth == 0) {
                     this.numCursorRight = undefined;
                 } else {
                     this.numCursorRight = this.valuePuzzle[this.addressEmpty + 1];
                 };
+            },
+            // Включение или выключение модального окна
+            modalOpenClose: function () {
+                if (this.isActiveModal){
+                    this.isActiveModal = false
+                } else {
+                    this.isActiveModal = true
+                };
+                this.puzzleHeight = (this.isHeight - 10) / 70; // 70 - это размер одного пазла
+                this.puzzleWidth = this.isWidth / 70; // 70 - это размер одного пазла
+            },
+            //отрисовка пазлов с новыми габаритами
+            modalOk: function () {
+                console.log(this.puzzleHeight, this.puzzleWidth)
+                const square = this.puzzleHeight * this.puzzleWidth;
+                this.valuePuzzle.splice(0,25);
+                for (let i = 1; i < square; i++) {
+                    this.valuePuzzle[i-1] = i;
+                }
+                this.valuePuzzle[square -1] = ''; 
+                this.addressEmpty = square - 1;
+
+                this.isHeight = 70 * this.puzzleHeight + 10; // 70 - это размер одного пазла
+                this.isWidth = 70 * this.puzzleWidth; // 70 - это размер одного пазла
+
+                numCursorTop = square - this.puzzleWidth;
+                numCursorLeft = square - 1;
+                numCursorRight = undefined;
+                numCursorBottom = undefined;
+
+                this.modalOpenClose();
+                this.cursorDraw();
+                return this.valuePuzzle = this.valuePuzzle.concat()
             }
 
         },
 
         mounted() {//вызов функций после загрузки HTML
             this.searchEmptyPuzzle();
-            //this.cursorDraw();
         },
+        computed: {
+            classActiveModalOverlay: function () {
+                return {
+                    activeModalOverlay: this.isActiveModal  === true,
+                    inActiveModalOverlay: this.isActiveModal === false
+                }
+            },
+            classActiveModalWindow: function () {
+                return {
+                    activeModalWindow: this.isActiveModal === true,
+                    inActiveModalWindow: this.isActiveModal === false
+                }
+            },
+        },
+
     })
 });
